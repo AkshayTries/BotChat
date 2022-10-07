@@ -1,17 +1,20 @@
-import pyaudio
-import pyttsx3
-from multiprocessing.connection import Listener
 import speech_recognition as sr
+import pyttsx3
 
-listener = sr.Recognizer()
-with sr.Microphone() as source:
-    print("Listening...")
-    voice = listener.listen(source)
-    command = listener.recognize(voice)
-    print(command)
-
+r = sr.Recognizer()
 engine = pyttsx3.init()
-voices = engine.getProperty('voices')
-engine.setProperty('voice',voices[1].id)
-engine.say("how are you doing")
+engine.say("Let us Begin")
 engine.runAndWait()
+
+while 1:
+    with sr.Microphone() as source:
+        r.adjust_for_ambient_noise(source, duration=1)
+        print("Listening")
+        audio = r.listen(source)
+        text = r.recognize(audio)
+        if 'stop' in text.lower():
+            break
+        print("Did you just say: ",text)
+engine.say("That is the end. Thank you")
+engine.runAndWait()
+

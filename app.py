@@ -31,7 +31,7 @@ class ChatApplication:
     def _setup_main_window(self):
         self.window.title("Chat")
         self.window.resizable(width=False, height=False)
-        self.window.configure(width=470, height=550, bg=BG_COLOR)
+        self.window.configure(width=600, height=550, bg=BG_COLOR)
  
         # head label
         head_label = Label(self.window, bg=BG_COLOR, fg=TEXT_COLOR,
@@ -71,6 +71,7 @@ class ChatApplication:
     def _on_enter_pressed(self, event):
         # msg = self.msg_entry.get()
         with sr.Microphone() as source:
+            listener.adjust_for_ambient_noise(source, duration=1)
             print("Listening...")
             voice = listener.listen(source)
             msg = listener.recognize(voice)

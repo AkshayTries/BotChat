@@ -9,8 +9,50 @@ from torch.utils.data import Dataset, DataLoader
 from nltk_utils import bag_of_words, tokenize, stem
 from model import NeuralNet
 
-with open('intents.json', 'r') as f:
+import csv
+from traceback import print_tb
+location = ''
+faculty = ''
+designation = ''
+response = ''
+
+#extract professors' names, designation and location
+with open('sample_data.csv',mode='r') as file:
+    csvFile = csv.reader(file)
+    i=1
+    for lines in csvFile:
+        if i==1:
+            faculty = lines[1:]
+        elif i==2:
+            designation = lines[1:]
+        else:
+            location = lines[1:]
+        i+=1
+
+#store each professors' tag, pattern and response in the JSON file 
+for i,c in enumerate(faculty): 
+    fac = []
+
+    #creating the patterns
+    fac=[c,"where can I find "+c,"where will "+c+" be","where is the cabin of "+c,"where does "+c+" work"]
+    # fac.append(c)
+    # fac.append("where can I find "+c)
+    # fac.append("where will "+c+" be")
+    # fac.append("where is the cabin of "+c)
+    # fac.append("where does "+c+" work")
+
+    #creating the location/response
+    res = [c+" can be found in the "+location[i],c+", "+designation[i]+", works in the "+location[i],c+" has quit RVCE"]
+    
+    tagname = c
+    data = {"tag":tagname,"patterns": fac,"responses":res}
+    f = open("intents.json", mode="r")
     intents = json.load(f)
+    f.close()
+    intents['intents'].append(data)
+    f = open('intents.json', mode='w+')
+    json.dump(intents, f)
+    f.close()
 
 all_words = []
 tags = []
